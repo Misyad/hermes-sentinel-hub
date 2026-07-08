@@ -4,39 +4,73 @@ import type { ApiAdapter, ApiResponse } from "../types";
 import * as mockOps from "@/mock/operations";
 import * as mockInfra from "@/mock/infrastructure";
 import * as mockAuto from "@/mock/automation";
+import * as mockAuth from "@/mock/auth";
 
 export class MockAdapter implements ApiAdapter {
+  private getMockAuthToken(): string | null {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("auth_access_token");
+    }
+    return null;
+  }
+
   async get<T>(url: string, _params?: Record<string, unknown>): Promise<ApiResponse<T>> {
-    // Simulate network delay
     await this.delay(100);
-    
-    const data = this.route(url);
+    const data = this.route(url, "GET");
     return { data: data as T };
   }
 
-  async post<T>(url: string, _data: unknown): Promise<ApiResponse<T>> {
+  async post<T>(url: string, data: unknown): Promise<ApiResponse<T>> {
     await this.delay(150);
-    
-    // Handle POST requests (acknowledge, resolve, execute, etc.)
-    const result = this.route(url, "POST");
+    const result = this.route(url, "POST", data);
     return { data: result as T };
   }
 
-  async put<T>(url: string, _data: unknown): Promise<ApiResponse<T>> {
+  async put<T>(url: string, data: unknown): Promise<ApiResponse<T>> {
     await this.delay(150);
-    
-    const result = this.route(url, "PUT");
+    const result = this.route(url, "PUT", data);
     return { data: result as T };
   }
 
   async delete<T>(url: string): Promise<ApiResponse<T>> {
     await this.delay(100);
-    
     const result = this.route(url, "DELETE");
     return { data: result as T };
   }
 
-  private route(url: string, method: string = "GET"): unknown {
+  private route(url: string, method: string = "GET", data?: unknown): unknown {
+    // Auth routes (Wave 4 Phase 1)
+    if (url === "/auth/login" && method === "POST") {
+      const { email, password } = data as { email: string; password: string };
+      const result = mockAuth.mockLogin(email, password);
+      if (!result) {
+        throw new Error("Invalid credentials");
+      }
+      return result;
+    }
+    if (url === "/auth/logout" && method === "POST") {
+      return { success: true };
+    }
+    if (url === "/auth/refresh" && method === "POST") {
+      const { refreshToken } = data as { refreshToken: string };
+      const result = mockAuth.mockRefreshToken(refreshToken);
+      if (!result) {
+        throw new Error("Invalid refresh token");
+      }
+      return result;
+    }
+    if (url === "/auth/me") {
+      const token = this.getMockAuthToken();
+      if (!token) {
+        throw new Error("Unauthorized");
+      }
+      const user = mockAuth.mockCurrentUser(token);
+      if (!user) {
+        throw new Error("Invalid token");
+      }
+      return user;
+    }
+    
     // Dashboard routes
     if (url === "/dashboard/metrics") {
       return mockOps.mockMonitoringMetrics;
@@ -83,7 +117,7 @@ export class MockAdapter implements ApiAdapter {
       return mockInfra.mockServices.find((s: any) => s.id === id) || mockInfra.mockServices[0];
     }
     
-    // Incidents routes (placeholder - will be implemented with incidents mock)
+    // Incidents routes
     if (url === "/incidents" || url.startsWith("/incidents?")) {
       return [];
     }
@@ -102,8 +136,8 @@ export class MockAdapter implements ApiAdapter {
       const id = url.split("/")[3];
       return mockAuto.mockPlaybooks.find((p: any) => p.id === id) || mockAuto.mockPlaybooks[0];
     }
-    if (url.match(/^\/automation\/playbooks\/[^/]+\/execute$/) && method === "POST") {
-      return { success: true, workflowId: `wf-${Date.now()}` };
+    if (url.match(/^\/automation\/playbooks\/[^/]+\/run$/) && method === "POST") {
+      return { success: true, message: "Playbook execution started", jobId: `job_${Date.now()}` };
     }
     if (url === "/automation/workflows") {
       return mockAuto.mockWorkflows;
@@ -112,12 +146,7 @@ export class MockAdapter implements ApiAdapter {
       return mockAuto.mockJobs;
     }
     
-    // AI routes (placeholder)
-    if (url === "/ai/recommendations") {
-      return [];
-    }
-    
-    // Default: route not found
+    // Default 404
     throw new Error(`Mock route not found: ${method} ${url}`);
   }
 
