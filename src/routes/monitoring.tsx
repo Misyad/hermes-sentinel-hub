@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RefreshCw, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { Metric } from "@/components/shared/Panel";
+import { getMonitoringMetrics, getServiceHealth } from "@/services";
+import type { Metric as MetricType, ServiceHealth } from "@/types";
 import {
-  mockMonitoringMetrics,
   mockCpuTimeSeries,
   mockMemoryTimeSeries,
   mockNetworkTimeSeries,
   mockErrorRateTimeSeries,
-  mockServiceHealth,
   mockActiveAlerts,
 } from "@/mock";
 import {
@@ -38,8 +38,19 @@ export const Route = createFileRoute("/monitoring")({
 type TimeRange = "1h" | "6h" | "24h" | "7d" | "30d";
 
 function MonitoringPage() {
+  const [metrics, setMetrics] = useState<MetricType[]>([]);
+  const [services, setServices] = useState<ServiceHealth[]>([]);
+  const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<TimeRange>("24h");
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    Promise.all([getMonitoringMetrics(), getServiceHealth()]).then(([metricsData, servicesData]) => {
+      setMetrics(metricsData);
+      setServices(servicesData);
+      setLoading(false);
+    });
+  }, []);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -92,7 +103,7 @@ function MonitoringPage() {
 
       {/* KPI Metrics */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {mockMonitoringMetrics.map((metric, i) => (
+        {metrics.map((metric, i) => (
           <Metric
             key={i}
             label={metric.label}
@@ -310,9 +321,9 @@ function MonitoringPage() {
       )}
 
       {/* Service Health Grid */}
-      <Panel title="Service Health" action={<span className="font-mono text-[10.5px] text-muted-foreground">{mockServiceHealth.length} services</span>}>
+      <Panel title="Service Health" action={<span className="font-mono text-[10.5px] text-muted-foreground">{services.length} services</span>}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {mockServiceHealth.map((service) => (
+          {services.map((service) => (
             <div
               key={service.id}
               className="flex flex-col gap-2 border-2 border-border-strong bg-surface p-3 transition-all hover:-translate-y-0.5 hover:shadow-brutal-sm"

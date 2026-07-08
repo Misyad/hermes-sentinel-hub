@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { Metric } from "@/components/shared/Panel";
-import { mockNodes, mockInfrastructureMetrics } from "@/mock";
+import { getNodes } from "@/services";
+import type { Node } from "@/types";
+import { mockInfrastructureMetrics } from "@/mock";
 import { RefreshCw, Server, Database, Cpu, HardDrive } from "lucide-react";
 
 export const Route = createFileRoute("/infrastructure")({
@@ -20,9 +22,18 @@ type NodeType = "all" | "controller" | "worker" | "database" | "cache";
 type NodeStatus = "all" | "healthy" | "degraded" | "critical" | "offline";
 
 function InfrastructurePage() {
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState<NodeType>("all");
   const [statusFilter, setStatusFilter] = useState<NodeStatus>("all");
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    getNodes().then((data) => {
+      setNodes(data);
+      setLoading(false);
+    });
+  }, []);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -31,7 +42,7 @@ function InfrastructurePage() {
 
   // Filter nodes
   const filteredNodes = useMemo(() => {
-    let filtered = mockNodes;
+    let filtered = nodes;
 
     if (typeFilter !== "all") {
       filtered = filtered.filter((n) => n.type === typeFilter);
@@ -42,7 +53,7 @@ function InfrastructurePage() {
     }
 
     return filtered;
-  }, [typeFilter, statusFilter]);
+  }, [nodes, typeFilter, statusFilter]);
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -107,7 +118,7 @@ function InfrastructurePage() {
         title="Nodes"
         action={
           <span className="font-mono text-[10.5px] text-muted-foreground">
-            {filteredNodes.length} of {mockNodes.length}
+            {filteredNodes.length} of {nodes.length}
           </span>
         }
       >

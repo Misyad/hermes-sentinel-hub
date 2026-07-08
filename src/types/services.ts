@@ -11,6 +11,7 @@ export interface Service {
   owner: string;
   uptime: number;
   requestRate: number;
+  requestsPerSec: number; // Alias for UI compatibility
   errorRate: number;
   latency: number;
   dependencies?: string[];

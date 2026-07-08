@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { Metric } from "@/components/shared/Panel";
-import { mockServices, mockServiceMetrics } from "@/mock";
+import { getServices } from "@/services";
+import type { Service } from "@/types";
+import { mockServiceMetrics } from "@/mock";
 import { RefreshCw, Box, Activity, TrendingUp, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/services")({
@@ -20,9 +22,18 @@ type ServiceStatus = "all" | "healthy" | "degraded" | "critical" | "offline";
 type ViewMode = "grid" | "list";
 
 function ServicesPage() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<ServiceStatus>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    getServices().then((data) => {
+      setServices(data);
+      setLoading(false);
+    });
+  }, []);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -31,9 +42,9 @@ function ServicesPage() {
 
   // Filter services
   const filteredServices = useMemo(() => {
-    if (statusFilter === "all") return mockServices;
-    return mockServices.filter((s) => s.status === statusFilter);
-  }, [statusFilter]);
+    if (statusFilter === "all") return services;
+    return services.filter((s) => s.status === statusFilter);
+  }, [services, statusFilter]);
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -98,7 +109,7 @@ function ServicesPage() {
         title="Services"
         action={
           <span className="font-mono text-[10.5px] text-muted-foreground">
-            {filteredServices.length} of {mockServices.length}
+            {filteredServices.length} of {services.length}
           </span>
         }
       >
