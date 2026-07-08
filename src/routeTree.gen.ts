@@ -16,6 +16,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as PlaybooksRouteImport } from './routes/playbooks'
 import { Route as MonitoringRouteImport } from './routes/monitoring'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
+import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as InfrastructureRouteImport } from './routes/infrastructure'
 import { Route as IncidentsRouteImport } from './routes/incidents'
 import { Route as IdentityRouteImport } from './routes/identity'
@@ -65,6 +66,11 @@ const MonitoringRoute = MonitoringRouteImport.update({
 const KnowledgeRoute = KnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsRoute = JobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InfrastructureRoute = InfrastructureRouteImport.update({
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/identity': typeof IdentityRoute
   '/incidents': typeof IncidentsRouteWithChildren
   '/infrastructure': typeof InfrastructureRoute
+  '/jobs': typeof JobsRoute
   '/knowledge': typeof KnowledgeRoute
   '/monitoring': typeof MonitoringRoute
   '/playbooks': typeof PlaybooksRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/developer': typeof DeveloperRoute
   '/identity': typeof IdentityRoute
   '/infrastructure': typeof InfrastructureRoute
+  '/jobs': typeof JobsRoute
   '/knowledge': typeof KnowledgeRoute
   '/monitoring': typeof MonitoringRoute
   '/playbooks': typeof PlaybooksRoute
@@ -205,6 +213,7 @@ export interface FileRoutesById {
   '/identity': typeof IdentityRoute
   '/incidents': typeof IncidentsRouteWithChildren
   '/infrastructure': typeof InfrastructureRoute
+  '/jobs': typeof JobsRoute
   '/knowledge': typeof KnowledgeRoute
   '/monitoring': typeof MonitoringRoute
   '/playbooks': typeof PlaybooksRoute
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
     | '/identity'
     | '/incidents'
     | '/infrastructure'
+    | '/jobs'
     | '/knowledge'
     | '/monitoring'
     | '/playbooks'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/developer'
     | '/identity'
     | '/infrastructure'
+    | '/jobs'
     | '/knowledge'
     | '/monitoring'
     | '/playbooks'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/identity'
     | '/incidents'
     | '/infrastructure'
+    | '/jobs'
     | '/knowledge'
     | '/monitoring'
     | '/playbooks'
@@ -303,6 +315,7 @@ export interface RootRouteChildren {
   IdentityRoute: typeof IdentityRoute
   IncidentsRoute: typeof IncidentsRouteWithChildren
   InfrastructureRoute: typeof InfrastructureRoute
+  JobsRoute: typeof JobsRoute
   KnowledgeRoute: typeof KnowledgeRoute
   MonitoringRoute: typeof MonitoringRoute
   PlaybooksRoute: typeof PlaybooksRoute
@@ -361,6 +374,13 @@ declare module '@tanstack/react-router' {
       path: '/knowledge'
       fullPath: '/knowledge'
       preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs': {
+      id: '/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof JobsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/infrastructure': {
@@ -499,6 +519,7 @@ const rootRouteChildren: RootRouteChildren = {
   IdentityRoute: IdentityRoute,
   IncidentsRoute: IncidentsRouteWithChildren,
   InfrastructureRoute: InfrastructureRoute,
+  JobsRoute: JobsRoute,
   KnowledgeRoute: KnowledgeRoute,
   MonitoringRoute: MonitoringRoute,
   PlaybooksRoute: PlaybooksRoute,

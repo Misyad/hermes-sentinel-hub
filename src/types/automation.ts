@@ -66,9 +66,17 @@ export interface WorkflowStep {
 export interface Job {
   id: string;
   workflowName: string;
-  status: "success" | "failed" | "running" | "pending";
+  workflowId?: string;
+  status: "success" | "failed" | "running" | "pending" | "cancelled";
   startTime: string;
+  endTime?: string;
   duration?: string;
   triggeredBy: string;
   result?: string;
+  environment?: string;
+  worker?: string;
+  exitCode?: number;
+  retryCount?: number;
+  logs?: string;
+  error?: string;
 }
