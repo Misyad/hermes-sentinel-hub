@@ -3,6 +3,7 @@
 import type { ApiAdapter, ApiResponse } from "../types";
 import * as mockOps from "@/mock/operations";
 import * as mockInfra from "@/mock/infrastructure";
+import * as mockAuto from "@/mock/automation";
 
 export class MockAdapter implements ApiAdapter {
   async get<T>(url: string, _params?: Record<string, unknown>): Promise<ApiResponse<T>> {
@@ -90,18 +91,25 @@ export class MockAdapter implements ApiAdapter {
       return null;
     }
     
-    // Automation routes (placeholder - Wave 3)
+    // Automation routes (Wave 3)
     if (url === "/automation/metrics") {
-      return [];
+      return mockAuto.mockAutomationMetrics;
     }
     if (url === "/automation/playbooks") {
-      return [];
+      return mockAuto.mockPlaybooks;
+    }
+    if (url.match(/^\/automation\/playbooks\/[^/]+$/)) {
+      const id = url.split("/")[3];
+      return mockAuto.mockPlaybooks.find((p: any) => p.id === id) || mockAuto.mockPlaybooks[0];
+    }
+    if (url.match(/^\/automation\/playbooks\/[^/]+\/execute$/) && method === "POST") {
+      return { success: true, workflowId: `wf-${Date.now()}` };
     }
     if (url === "/automation/workflows") {
-      return [];
+      return mockAuto.mockWorkflows;
     }
     if (url === "/automation/jobs") {
-      return [];
+      return mockAuto.mockJobs;
     }
     
     // AI routes (placeholder)

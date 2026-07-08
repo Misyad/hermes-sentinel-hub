@@ -1,5 +1,6 @@
 // Centralized mock data exports
 
-export * from './types';
 export * from './operations';
 export * from './infrastructure';
+export * from './automation';
+export * from './types';
