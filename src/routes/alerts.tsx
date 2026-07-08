@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -12,8 +12,8 @@ import {
 } from "@tanstack/react-table";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
-import { mockAlerts } from "@/mock";
-import type { Alert } from "@/mock/types";
+import { getAlerts } from "@/services";
+import type { Alert } from "@/types";
 import { Search, Filter, Bell, BellOff, Check, X, ArrowUpDown, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/alerts")({
@@ -35,10 +35,19 @@ function AlertsPage() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAlerts().then((data) => {
+      setAlerts(data);
+      setLoading(false);
+    });
+  }, []);
 
   // Filter data based on severity and status
   const filteredData = useMemo(() => {
-    let filtered = mockAlerts;
+    let filtered = alerts;
     
     if (severityFilter !== "all") {
       filtered = filtered.filter((a) => a.severity === severityFilter);
@@ -54,12 +63,12 @@ function AlertsPage() {
   // Count alerts by status
   const alertCounts = useMemo(() => {
     return {
-      firing: mockAlerts.filter((a) => a.status === "firing").length,
-      pending: mockAlerts.filter((a) => a.status === "pending").length,
-      resolved: mockAlerts.filter((a) => a.status === "resolved").length,
-      total: mockAlerts.length,
+      firing: alerts.filter((a) => a.status === "firing").length,
+      pending: alerts.filter((a) => a.status === "pending").length,
+      resolved: alerts.filter((a) => a.status === "resolved").length,
+      total: alerts.length,
     };
-  }, []);
+  }, [alerts]);
 
   const columnHelper = createColumnHelper<Alert>();
 
@@ -270,7 +279,7 @@ function AlertsPage() {
         title="Alerts"
         action={
           <span className="font-mono text-[10.5px] text-muted-foreground">
-            {table.getFilteredRowModel().rows.length} of {mockAlerts.length}
+            {table.getFilteredRowModel().rows.length} of {alerts.length}
           </span>
         }
       >
