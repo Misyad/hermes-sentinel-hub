@@ -9,14 +9,116 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as PlaybooksRouteImport } from './routes/playbooks'
+import { Route as MonitoringRouteImport } from './routes/monitoring'
+import { Route as KnowledgeRouteImport } from './routes/knowledge'
+import { Route as InfrastructureRouteImport } from './routes/infrastructure'
 import { Route as IncidentsRouteImport } from './routes/incidents'
+import { Route as IdentityRouteImport } from './routes/identity'
+import { Route as DeveloperRouteImport } from './routes/developer'
+import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as ChangeRouteImport } from './routes/change'
+import { Route as AutomationRouteImport } from './routes/automation'
+import { Route as AuditRouteImport } from './routes/audit'
+import { Route as AssetsRouteImport } from './routes/assets'
+import { Route as AlertsRouteImport } from './routes/alerts'
+import { Route as AiRouteImport } from './routes/ai'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as IncidentsIndexRouteImport } from './routes/incidents.index'
 import { Route as IncidentsIdRouteImport } from './routes/incidents.$id'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlaybooksRoute = PlaybooksRouteImport.update({
+  id: '/playbooks',
+  path: '/playbooks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonitoringRoute = MonitoringRouteImport.update({
+  id: '/monitoring',
+  path: '/monitoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeRoute = KnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InfrastructureRoute = InfrastructureRouteImport.update({
+  id: '/infrastructure',
+  path: '/infrastructure',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IncidentsRoute = IncidentsRouteImport.update({
   id: '/incidents',
   path: '/incidents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IdentityRoute = IdentityRouteImport.update({
+  id: '/identity',
+  path: '/identity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeveloperRoute = DeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangeRoute = ChangeRouteImport.update({
+  id: '/change',
+  path: '/change',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AutomationRoute = AutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssetsRoute = AssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlertsRoute = AlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiRoute = AiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,42 +139,292 @@ const IncidentsIdRoute = IncidentsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ai': typeof AiRoute
+  '/alerts': typeof AlertsRoute
+  '/assets': typeof AssetsRoute
+  '/audit': typeof AuditRoute
+  '/automation': typeof AutomationRoute
+  '/change': typeof ChangeRoute
+  '/compliance': typeof ComplianceRoute
+  '/developer': typeof DeveloperRoute
+  '/identity': typeof IdentityRoute
   '/incidents': typeof IncidentsRouteWithChildren
+  '/infrastructure': typeof InfrastructureRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/monitoring': typeof MonitoringRoute
+  '/playbooks': typeof PlaybooksRoute
+  '/reports': typeof ReportsRoute
+  '/services': typeof ServicesRoute
+  '/settings': typeof SettingsRoute
   '/incidents/$id': typeof IncidentsIdRoute
   '/incidents/': typeof IncidentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ai': typeof AiRoute
+  '/alerts': typeof AlertsRoute
+  '/assets': typeof AssetsRoute
+  '/audit': typeof AuditRoute
+  '/automation': typeof AutomationRoute
+  '/change': typeof ChangeRoute
+  '/compliance': typeof ComplianceRoute
+  '/developer': typeof DeveloperRoute
+  '/identity': typeof IdentityRoute
+  '/infrastructure': typeof InfrastructureRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/monitoring': typeof MonitoringRoute
+  '/playbooks': typeof PlaybooksRoute
+  '/reports': typeof ReportsRoute
+  '/services': typeof ServicesRoute
+  '/settings': typeof SettingsRoute
   '/incidents/$id': typeof IncidentsIdRoute
   '/incidents': typeof IncidentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ai': typeof AiRoute
+  '/alerts': typeof AlertsRoute
+  '/assets': typeof AssetsRoute
+  '/audit': typeof AuditRoute
+  '/automation': typeof AutomationRoute
+  '/change': typeof ChangeRoute
+  '/compliance': typeof ComplianceRoute
+  '/developer': typeof DeveloperRoute
+  '/identity': typeof IdentityRoute
   '/incidents': typeof IncidentsRouteWithChildren
+  '/infrastructure': typeof InfrastructureRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/monitoring': typeof MonitoringRoute
+  '/playbooks': typeof PlaybooksRoute
+  '/reports': typeof ReportsRoute
+  '/services': typeof ServicesRoute
+  '/settings': typeof SettingsRoute
   '/incidents/$id': typeof IncidentsIdRoute
   '/incidents/': typeof IncidentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/incidents' | '/incidents/$id' | '/incidents/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/ai'
+    | '/alerts'
+    | '/assets'
+    | '/audit'
+    | '/automation'
+    | '/change'
+    | '/compliance'
+    | '/developer'
+    | '/identity'
+    | '/incidents'
+    | '/infrastructure'
+    | '/knowledge'
+    | '/monitoring'
+    | '/playbooks'
+    | '/reports'
+    | '/services'
+    | '/settings'
+    | '/incidents/$id'
+    | '/incidents/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/incidents/$id' | '/incidents'
-  id: '__root__' | '/' | '/incidents' | '/incidents/$id' | '/incidents/'
+  to:
+    | '/'
+    | '/admin'
+    | '/ai'
+    | '/alerts'
+    | '/assets'
+    | '/audit'
+    | '/automation'
+    | '/change'
+    | '/compliance'
+    | '/developer'
+    | '/identity'
+    | '/infrastructure'
+    | '/knowledge'
+    | '/monitoring'
+    | '/playbooks'
+    | '/reports'
+    | '/services'
+    | '/settings'
+    | '/incidents/$id'
+    | '/incidents'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/ai'
+    | '/alerts'
+    | '/assets'
+    | '/audit'
+    | '/automation'
+    | '/change'
+    | '/compliance'
+    | '/developer'
+    | '/identity'
+    | '/incidents'
+    | '/infrastructure'
+    | '/knowledge'
+    | '/monitoring'
+    | '/playbooks'
+    | '/reports'
+    | '/services'
+    | '/settings'
+    | '/incidents/$id'
+    | '/incidents/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AiRoute: typeof AiRoute
+  AlertsRoute: typeof AlertsRoute
+  AssetsRoute: typeof AssetsRoute
+  AuditRoute: typeof AuditRoute
+  AutomationRoute: typeof AutomationRoute
+  ChangeRoute: typeof ChangeRoute
+  ComplianceRoute: typeof ComplianceRoute
+  DeveloperRoute: typeof DeveloperRoute
+  IdentityRoute: typeof IdentityRoute
   IncidentsRoute: typeof IncidentsRouteWithChildren
+  InfrastructureRoute: typeof InfrastructureRoute
+  KnowledgeRoute: typeof KnowledgeRoute
+  MonitoringRoute: typeof MonitoringRoute
+  PlaybooksRoute: typeof PlaybooksRoute
+  ReportsRoute: typeof ReportsRoute
+  ServicesRoute: typeof ServicesRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/playbooks': {
+      id: '/playbooks'
+      path: '/playbooks'
+      fullPath: '/playbooks'
+      preLoaderRoute: typeof PlaybooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/monitoring': {
+      id: '/monitoring'
+      path: '/monitoring'
+      fullPath: '/monitoring'
+      preLoaderRoute: typeof MonitoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge': {
+      id: '/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/infrastructure': {
+      id: '/infrastructure'
+      path: '/infrastructure'
+      fullPath: '/infrastructure'
+      preLoaderRoute: typeof InfrastructureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/incidents': {
       id: '/incidents'
       path: '/incidents'
       fullPath: '/incidents'
       preLoaderRoute: typeof IncidentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/identity': {
+      id: '/identity'
+      path: '/identity'
+      fullPath: '/identity'
+      preLoaderRoute: typeof IdentityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developer': {
+      id: '/developer'
+      path: '/developer'
+      fullPath: '/developer'
+      preLoaderRoute: typeof DeveloperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/change': {
+      id: '/change'
+      path: '/change'
+      fullPath: '/change'
+      preLoaderRoute: typeof ChangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automation': {
+      id: '/automation'
+      path: '/automation'
+      fullPath: '/automation'
+      preLoaderRoute: typeof AutomationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assets': {
+      id: '/assets'
+      path: '/assets'
+      fullPath: '/assets'
+      preLoaderRoute: typeof AssetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alerts': {
+      id: '/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai': {
+      id: '/ai'
+      path: '/ai'
+      fullPath: '/ai'
+      preLoaderRoute: typeof AiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -115,7 +467,24 @@ const IncidentsRouteWithChildren = IncidentsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AiRoute: AiRoute,
+  AlertsRoute: AlertsRoute,
+  AssetsRoute: AssetsRoute,
+  AuditRoute: AuditRoute,
+  AutomationRoute: AutomationRoute,
+  ChangeRoute: ChangeRoute,
+  ComplianceRoute: ComplianceRoute,
+  DeveloperRoute: DeveloperRoute,
+  IdentityRoute: IdentityRoute,
   IncidentsRoute: IncidentsRouteWithChildren,
+  InfrastructureRoute: InfrastructureRoute,
+  KnowledgeRoute: KnowledgeRoute,
+  MonitoringRoute: MonitoringRoute,
+  PlaybooksRoute: PlaybooksRoute,
+  ReportsRoute: ReportsRoute,
+  ServicesRoute: ServicesRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
