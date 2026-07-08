@@ -16,7 +16,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.navigate({ to: "/login" });
+      router.navigate({ to: "/" as any });
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -123,7 +123,7 @@ export function SessionExpiredPage() {
             </p>
           </div>
           <button
-            onClick={() => router.navigate({ to: "/login" })}
+            onClick={() => (window.location.href = "/login")}
             className="w-full rounded-lg border-2 border-primary bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Log In

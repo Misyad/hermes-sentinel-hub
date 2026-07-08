@@ -15,6 +15,7 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as PlaybooksRouteImport } from './routes/playbooks'
 import { Route as MonitoringRouteImport } from './routes/monitoring'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as InfrastructureRouteImport } from './routes/infrastructure'
@@ -61,6 +62,11 @@ const PlaybooksRoute = PlaybooksRouteImport.update({
 const MonitoringRoute = MonitoringRouteImport.update({
   id: '/monitoring',
   path: '/monitoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgeRoute = KnowledgeRouteImport.update({
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/infrastructure': typeof InfrastructureRoute
   '/jobs': typeof JobsRoute
   '/knowledge': typeof KnowledgeRoute
+  '/login': typeof LoginRoute
   '/monitoring': typeof MonitoringRoute
   '/playbooks': typeof PlaybooksRoute
   '/reports': typeof ReportsRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/infrastructure': typeof InfrastructureRoute
   '/jobs': typeof JobsRoute
   '/knowledge': typeof KnowledgeRoute
+  '/login': typeof LoginRoute
   '/monitoring': typeof MonitoringRoute
   '/playbooks': typeof PlaybooksRoute
   '/reports': typeof ReportsRoute
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/infrastructure': typeof InfrastructureRoute
   '/jobs': typeof JobsRoute
   '/knowledge': typeof KnowledgeRoute
+  '/login': typeof LoginRoute
   '/monitoring': typeof MonitoringRoute
   '/playbooks': typeof PlaybooksRoute
   '/reports': typeof ReportsRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/infrastructure'
     | '/jobs'
     | '/knowledge'
+    | '/login'
     | '/monitoring'
     | '/playbooks'
     | '/reports'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/infrastructure'
     | '/jobs'
     | '/knowledge'
+    | '/login'
     | '/monitoring'
     | '/playbooks'
     | '/reports'
@@ -291,6 +302,7 @@ export interface FileRouteTypes {
     | '/infrastructure'
     | '/jobs'
     | '/knowledge'
+    | '/login'
     | '/monitoring'
     | '/playbooks'
     | '/reports'
@@ -317,6 +329,7 @@ export interface RootRouteChildren {
   InfrastructureRoute: typeof InfrastructureRoute
   JobsRoute: typeof JobsRoute
   KnowledgeRoute: typeof KnowledgeRoute
+  LoginRoute: typeof LoginRoute
   MonitoringRoute: typeof MonitoringRoute
   PlaybooksRoute: typeof PlaybooksRoute
   ReportsRoute: typeof ReportsRoute
@@ -367,6 +380,13 @@ declare module '@tanstack/react-router' {
       path: '/monitoring'
       fullPath: '/monitoring'
       preLoaderRoute: typeof MonitoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/knowledge': {
@@ -521,6 +541,7 @@ const rootRouteChildren: RootRouteChildren = {
   InfrastructureRoute: InfrastructureRoute,
   JobsRoute: JobsRoute,
   KnowledgeRoute: KnowledgeRoute,
+  LoginRoute: LoginRoute,
   MonitoringRoute: MonitoringRoute,
   PlaybooksRoute: PlaybooksRoute,
   ReportsRoute: ReportsRoute,
