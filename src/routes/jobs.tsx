@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { Metric } from "@/components/shared/Panel";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
-import { getJobs } from "@/services";
+import { useJobs } from "@/hooks/useAutomation";
 import type { Job } from "@/types";
 import {
   Search,
@@ -45,31 +45,14 @@ type EnvironmentFilter = "all" | "production" | "staging";
 const columnHelper = createColumnHelper<Job>();
 
 function JobsPage() {
+  const { data: jobs = [], isLoading, refetch } = useJobs();
   const [sorting, setSorting] = useState<SortingState>([{ id: "startTime", desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [environmentFilter, setEnvironmentFilter] = useState<EnvironmentFilter>("all");
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showLogs, setShowLogs] = useState(false);
-
-  useEffect(() => {
-    getJobs().then((data) => {
-      setJobs(data);
-      setLoading(false);
-    });
-  }, []);
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    getJobs().then((data) => {
-      setJobs(data);
-      setIsRefreshing(false);
-    });
-  };
 
   const filteredData = useMemo(() => {
     let filtered = jobs;
@@ -278,7 +261,7 @@ function JobsPage() {
     },
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-6 p-4 md:p-6">
         <div className="h-20 animate-pulse bg-zinc-800" />
@@ -300,11 +283,10 @@ function JobsPage() {
         description="Job execution history and monitoring"
         actions={
           <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground disabled:opacity-50"
+            onClick={() => refetch()}
+            className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
           >
-            <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className="h-3 w-3" />
             refresh
           </button>
         }

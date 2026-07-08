@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -13,7 +13,7 @@ import {
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel, Metric } from "@/components/shared/Panel";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
-import { getPlaybooks } from "@/services";
+import { usePlaybooks } from "@/hooks/useAutomation";
 import type { Playbook } from "@/types";
 import {
   Search,
@@ -48,29 +48,12 @@ type RiskFilter = "all" | "low" | "medium" | "high" | "critical";
 const columnHelper = createColumnHelper<Playbook>();
 
 function PlaybooksPage() {
+  const { data: playbooks = [], isLoading, refetch } = usePlaybooks();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [riskFilter, setRiskFilter] = useState<RiskFilter>("all");
-  const [playbooks, setPlaybooks] = useState<Playbook[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  useEffect(() => {
-    getPlaybooks().then((data) => {
-      setPlaybooks(data);
-      setLoading(false);
-    });
-  }, []);
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    getPlaybooks().then((data) => {
-      setPlaybooks(data);
-      setIsRefreshing(false);
-    });
-  };
 
   // Filter data
   const filteredData = useMemo(() => {
@@ -296,7 +279,7 @@ function PlaybooksPage() {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-6 p-4 md:p-6">
         <div className="h-20 animate-pulse bg-zinc-800" />
@@ -319,11 +302,10 @@ function PlaybooksPage() {
         actions={
           <div className="flex items-center gap-2">
             <button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground disabled:opacity-50"
+              onClick={() => refetch()}
+              className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
             >
-              <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className="h-3 w-3" />
               refresh
             </button>
             <button className="flex h-8 items-center gap-1.5 border-2 border-primary bg-primary px-3 font-mono text-[10.5px] uppercase tracking-widest text-primary-foreground hover:bg-primary/90">

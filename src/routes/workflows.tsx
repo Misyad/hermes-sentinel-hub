@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel, Metric } from "@/components/shared/Panel";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
-import { getWorkflows } from "@/services";
+import { useWorkflows } from "@/hooks/useAutomation";
 import type { Workflow } from "@/types";
 import {
   RefreshCw,
@@ -67,7 +67,7 @@ function WorkflowsPage() {
   const failedCount = workflows.filter((w) => w.status === "failed").length;
   const queuedCount = workflows.filter((w) => w.status === "queued").length;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -86,11 +86,10 @@ function WorkflowsPage() {
           actions={
             <div className="flex items-center gap-2">
               <button
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground disabled:opacity-50"
+                onClick={() => refetch()}
+                className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
               >
-                <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+                <RefreshCw className="h-3 w-3" />
                 refresh
               </button>
               <button className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground">
