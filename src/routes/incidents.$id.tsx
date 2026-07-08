@@ -29,19 +29,10 @@ function IncidentDetail() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        eyebrow={
-          <span className="flex items-center gap-2">
-            <Link
-              to="/incidents"
-              className="flex items-center gap-1 hover:text-foreground"
-            >
-              <ArrowLeft className="h-3 w-3" /> incidents
-            </Link>
-            <span>/ {id}</span>
-          </span>
-        as unknown as string}
+        eyebrow={`incidents / ${id}`}
         title="Elevated 5xx on api-gateway (v2.14.1 rollout)"
         description="Investigation in progress · sre-oncall · production · us-east-1"
+
         actions={
           <>
             <button className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground">
