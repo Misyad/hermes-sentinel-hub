@@ -7,10 +7,11 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
-
-import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AppShell } from "@/components/layout/AppShell";
+import { Toaster } from "sonner";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { AppShell } from "../components/layout/AppShell";
 import { Toaster } from "sonner";
 import { CommandPalette, useCommandPalette } from "../components/CommandPalette";
