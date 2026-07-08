@@ -171,8 +171,8 @@ export const mockServiceHealth: ServiceHealth[] = [
   },
 ];
 
-// Active Alerts
-export const mockActiveAlerts: Alert[] = [
+// Active Alerts (Extended for Alerts screen)
+export const mockAlerts: Alert[] = [
   {
     id: 'alert-1',
     title: 'High CPU usage on worker-pool-3',
@@ -200,4 +200,115 @@ export const mockActiveAlerts: Alert[] = [
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     duration: '2h 15m',
   },
+  {
+    id: 'alert-4',
+    title: 'Memory threshold exceeded on api-gateway-2',
+    severity: 'high',
+    status: 'firing',
+    service: 'api-gateway',
+    timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    duration: '5m',
+  },
+  {
+    id: 'alert-5',
+    title: 'Increased error rate on auth-service',
+    severity: 'medium',
+    status: 'pending',
+    service: 'auth-service',
+    timestamp: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+    duration: '2m',
+  },
+  {
+    id: 'alert-6',
+    title: 'Disk space low on storage node',
+    severity: 'high',
+    status: 'firing',
+    service: 'storage-s3',
+    timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+    duration: '30m',
+  },
+  {
+    id: 'alert-7',
+    title: 'Kafka consumer lag increasing',
+    severity: 'medium',
+    status: 'firing',
+    service: 'queue-kafka',
+    timestamp: new Date(Date.now() - 18 * 60 * 1000).toISOString(),
+    duration: '18m',
+  },
+  {
+    id: 'alert-8',
+    title: 'SSL certificate expiring soon',
+    severity: 'low',
+    status: 'firing',
+    service: 'cdn-cloudflare',
+    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    duration: '3d',
+  },
+  {
+    id: 'alert-9',
+    title: 'Elasticsearch cluster health degraded',
+    severity: 'high',
+    status: 'firing',
+    service: 'search-elastic',
+    timestamp: new Date(Date.now() - 22 * 60 * 1000).toISOString(),
+    duration: '22m',
+  },
+  {
+    id: 'alert-10',
+    title: 'Redis connection pool exhausted',
+    severity: 'critical',
+    status: 'firing',
+    service: 'cache-redis',
+    timestamp: new Date(Date.now() - 8 * 60 * 1000).toISOString(),
+    duration: '8m',
+  },
+  {
+    id: 'alert-11',
+    title: 'Background job queue backlog growing',
+    severity: 'medium',
+    status: 'pending',
+    service: 'worker-pool',
+    timestamp: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
+    duration: '1m',
+  },
+  {
+    id: 'alert-12',
+    title: 'API rate limit threshold reached',
+    severity: 'low',
+    status: 'resolved',
+    service: 'api-gateway',
+    timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+    duration: '15m',
+  },
+  {
+    id: 'alert-13',
+    title: 'Database query performance degraded',
+    severity: 'medium',
+    status: 'resolved',
+    service: 'db-primary',
+    timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+    duration: '35m',
+  },
+  {
+    id: 'alert-14',
+    title: 'Network latency spike detected',
+    severity: 'high',
+    status: 'resolved',
+    service: 'cdn-cloudflare',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    duration: '8m',
+  },
+  {
+    id: 'alert-15',
+    title: 'Container restart loop detected',
+    severity: 'critical',
+    status: 'resolved',
+    service: 'ml-inference',
+    timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+    duration: '45m',
+  },
 ];
+
+// For Monitoring screen (active alerts only)
+export const mockActiveAlerts = mockAlerts.filter((a) => a.status === 'firing');
