@@ -1,10 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { SevPill, StatusBadge } from "@/components/shared/StatusBadge";
 import { AIPanel } from "@/components/shared/AIPanel";
 import {
-  ArrowLeft,
   Radio,
   UserPlus,
   MessageSquare,
@@ -12,6 +11,7 @@ import {
   Paperclip,
   ShieldAlert,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/incidents/$id")({
   head: ({ params }) => ({
