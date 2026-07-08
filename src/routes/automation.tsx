@@ -4,6 +4,7 @@ import { RefreshCw, Play, Clock, AlertTriangle, CheckCircle2, XCircle } from "lu
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { Metric } from "@/components/shared/Panel";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { getAutomationMetrics, getWorkflows, getJobs } from "@/services";
 import type { AutomationMetric, Workflow, Job } from "@/types";
 
@@ -14,7 +15,11 @@ export const Route = createFileRoute("/automation")({
       { name: "description", content: "Automation workflows, playbooks, and scheduled jobs." },
     ],
   }),
-  component: AutomationPage,
+  component: () => (
+    <ErrorBoundary>
+      <AutomationPage />
+    </ErrorBoundary>
+  ),
 });
 
 function AutomationPage() {

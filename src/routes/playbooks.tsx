@@ -11,21 +11,21 @@ import {
   type ColumnFiltersState,
 } from "@tanstack/react-table";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { Panel } from "@/components/shared/Panel";
-import { Metric } from "@/components/shared/Panel";
+import { Panel, Metric } from "@/components/shared/Panel";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { getPlaybooks } from "@/services";
 import type { Playbook } from "@/types";
 import {
   Search,
   RefreshCw,
+  Plus,
   Play,
   Copy,
   Pause,
   Archive,
   Trash2,
-  ArrowUpDown,
-  Plus,
   Filter,
+  ArrowUpDown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/playbooks")({
@@ -35,7 +35,11 @@ export const Route = createFileRoute("/playbooks")({
       { name: "description", content: "Automation playbook management and execution." },
     ],
   }),
-  component: PlaybooksPage,
+  component: () => (
+    <ErrorBoundary>
+      <PlaybooksPage />
+    </ErrorBoundary>
+  ),
 });
 
 type StatusFilter = "all" | "active" | "inactive" | "archived";

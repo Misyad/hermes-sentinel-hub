@@ -14,6 +14,7 @@ import {
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { Metric } from "@/components/shared/Panel";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { getJobs } from "@/services";
 import type { Job } from "@/types";
 import {
@@ -31,7 +32,11 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/jobs")({
-  component: JobsPage,
+  component: () => (
+    <ErrorBoundary>
+      <JobsPage />
+    </ErrorBoundary>
+  ),
 });
 
 type StatusFilter = "all" | "success" | "failed" | "running" | "pending" | "cancelled";

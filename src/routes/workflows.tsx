@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel, Metric } from "@/components/shared/Panel";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { getWorkflows } from "@/services";
 import type { Workflow } from "@/types";
 import {
@@ -19,7 +20,11 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/workflows")({
-  component: WorkflowsPage,
+  component: () => (
+    <ErrorBoundary>
+      <WorkflowsPage />
+    </ErrorBoundary>
+  ),
 });
 
 type StatusFilter = "all" | "running" | "completed" | "failed" | "pending" | "queued";
