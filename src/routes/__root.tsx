@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/layout/AppShell";
 import { Toaster } from "sonner";
+import { CommandPalette, useCommandPalette } from "../components/CommandPalette";
 
 function NotFoundComponent() {
   return (
@@ -140,9 +141,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { isOpen, setIsOpen } = useCommandPalette();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <CommandPalette isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <AppShell>
         <Outlet />
       </AppShell>
