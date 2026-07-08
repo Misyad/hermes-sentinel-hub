@@ -47,7 +47,7 @@ export function Metric({
   label: string;
   value: ReactNode;
   delta?: string;
-  deltaTone?: "up" | "down" | "muted";
+  deltaTone?: "up" | "down" | "muted" | "positive" | "negative" | "neutral";
   suffix?: string;
   mono?: boolean;
 }) {
@@ -73,9 +73,9 @@ export function Metric({
         <div
           className={cn(
             "mt-1 font-mono text-[10.5px]",
-            deltaTone === "up" && "text-healthy",
-            deltaTone === "down" && "text-critical",
-            deltaTone === "muted" && "text-muted-foreground",
+            (deltaTone === "up" || deltaTone === "positive") && "text-healthy",
+            (deltaTone === "down" || deltaTone === "negative") && "text-critical",
+            (deltaTone === "muted" || deltaTone === "neutral") && "text-muted-foreground",
           )}
         >
           {delta}

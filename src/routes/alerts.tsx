@@ -14,7 +14,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { mockAlerts } from "@/mock";
 import type { Alert } from "@/mock/types";
-import { Search, Filter, Bell, BellOff, Check, X, ArrowUpDown } from "lucide-react";
+import { Search, Filter, Bell, BellOff, Check, X, ArrowUpDown, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/alerts")({
   head: () => ({
