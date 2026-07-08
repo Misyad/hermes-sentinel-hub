@@ -1,12 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
 import { RefreshCw, Play, Clock, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel } from "@/components/shared/Panel";
 import { Metric } from "@/components/shared/Panel";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
-import { getAutomationMetrics, getWorkflows, getJobs } from "@/services";
-import type { AutomationMetric, Workflow, Job } from "@/types";
+import { useAutomationMetrics, useWorkflows, useJobs } from "@/hooks/useAutomation";
 
 export const Route = createFileRoute("/automation")({
   head: () => ({
@@ -23,26 +21,16 @@ export const Route = createFileRoute("/automation")({
 });
 
 function AutomationPage() {
-  const [metrics, setMetrics] = useState<AutomationMetric[]>([]);
-  const [workflows, setWorkflows] = useState<Workflow[]>([]);
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { data: metrics = [], isLoading: metricsLoading, refetch: refetchMetrics } = useAutomationMetrics();
+  const { data: workflows = [], isLoading: workflowsLoading, refetch: refetchWorkflows } = useWorkflows();
+  const { data: jobs = [], isLoading: jobsLoading, refetch: refetchJobs } = useJobs();
 
-  useEffect(() => {
-    Promise.all([getAutomationMetrics(), getWorkflows(), getJobs()]).then(
-      ([metricsData, workflowsData, jobsData]) => {
-        setMetrics(metricsData);
-        setWorkflows(workflowsData);
-        setJobs(jobsData);
-        setLoading(false);
-      }
-    );
-  }, []);
+  const loading = metricsLoading || workflowsLoading || jobsLoading;
 
   const handleRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 1000);
+    refetchMetrics();
+    refetchWorkflows();
+    refetchJobs();
   };
 
   const runningWorkflows = workflows.filter((w) => w.status === "running");
@@ -57,6 +45,7 @@ function AutomationPage() {
             <div key={i} className="h-24 animate-pulse bg-zinc-800" />
           ))}
         </div>
+        <div className="h-96 animate-pulse bg-zinc-800" />
       </div>
     );
   }
@@ -70,10 +59,9 @@ function AutomationPage() {
         actions={
           <button
             onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground disabled:opacity-50"
+            className="flex h-8 items-center gap-1.5 border-2 border-border-strong bg-surface px-2 font-mono text-[10.5px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
           >
-            <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className="h-3 w-3" />
             refresh
           </button>
         }
@@ -109,72 +97,35 @@ function AutomationPage() {
           }
         >
           {runningWorkflows.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-8">
-              <CheckCircle2 className="h-10 w-10 text-muted-foreground/30" />
-              <p className="text-sm text-muted-foreground">No workflows running</p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <CheckCircle2 className="h-10 w-10 text-healthy/30" />
+              <p className="mt-2 text-sm text-muted-foreground">No workflows running</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="space-y-3">
               {runningWorkflows.map((workflow) => (
                 <div
                   key={workflow.id}
-                  className="flex flex-col gap-2 border-2 border-border-strong bg-surface p-3"
+                  className="flex items-start justify-between gap-3 border-b border-border pb-3 last:border-0 last:pb-0"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex flex-col gap-1">
-                      <span className="font-mono text-sm font-medium text-foreground">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <Play className="h-3.5 w-3.5 flex-shrink-0 text-info" />
+                      <span className="truncate font-mono text-sm font-medium text-foreground">
                         {workflow.name}
                       </span>
-                      <span className="text-xs text-muted-foreground">{workflow.description}</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Play className="h-3 w-3 text-info" />
-                      <span className="font-mono text-xs text-info">running</span>
-                    </div>
-                  </div>
-
-                  {/* Progress Bar */}
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Progress</span>
-                      <span className="font-mono text-foreground">{workflow.progress}%</span>
-                    </div>
-                    <div className="h-1 w-full bg-zinc-800">
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                      {workflow.description}
+                    </p>
+                    <div className="mt-2 h-1 w-full bg-zinc-800">
                       <div
-                        className="h-full bg-info transition-all"
+                        className="h-full bg-info transition-all duration-300"
                         style={{ width: `${workflow.progress}%` }}
                       />
                     </div>
                   </div>
-
-                  {/* Steps */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {workflow.steps.map((step) => (
-                      <div
-                        key={step.id}
-                        className={`rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest ${
-                          step.status === "completed"
-                            ? "bg-healthy/20 text-healthy"
-                            : step.status === "running"
-                              ? "bg-info/20 text-info"
-                              : step.status === "failed"
-                                ? "bg-critical/20 text-critical"
-                                : "bg-zinc-800 text-muted-foreground"
-                        }`}
-                      >
-                        {step.name}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-2 border-t border-border-strong pt-2 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>
-                      Started{" "}
-                      {Math.floor((Date.now() - new Date(workflow.startTime).getTime()) / 60000)}m
-                      ago
-                    </span>
-                  </div>
+                  <span className="font-mono text-xs text-muted-foreground">{workflow.progress}%</span>
                 </div>
               ))}
             </div>
@@ -185,89 +136,60 @@ function AutomationPage() {
         <Panel
           title="Recent Executions"
           action={
-            <span className="font-mono text-[10.5px] text-muted-foreground">{jobs.length} jobs</span>
+            <span className="font-mono text-[10.5px] text-muted-foreground">
+              last {jobs.slice(0, 5).length}
+            </span>
           }
         >
-          <div className="flex flex-col gap-2">
-            {jobs.slice(0, 6).map((job) => (
+          <div className="space-y-2">
+            {jobs.slice(0, 5).map((job) => (
               <div
                 key={job.id}
-                className="flex items-center justify-between border-2 border-border-strong bg-surface p-2.5 text-xs"
+                className="flex items-center justify-between gap-3 border-b border-border pb-2 last:border-0 last:pb-0"
               >
-                <div className="flex flex-col gap-1">
-                  <span className="font-mono text-sm text-foreground">{job.workflowName}</span>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>
-                      {Math.floor((Date.now() - new Date(job.startTime).getTime()) / 60000)}m ago
-                    </span>
-                    {job.duration && <span>· {job.duration}</span>}
-                  </div>
-                  {job.result && <span className="text-muted-foreground">{job.result}</span>}
+                <div className="flex flex-1 items-center gap-2 min-w-0">
+                  {job.status === "success" && <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0 text-healthy" />}
+                  {job.status === "failed" && <XCircle className="h-3.5 w-3.5 flex-shrink-0 text-critical" />}
+                  {job.status === "running" && <Clock className="h-3.5 w-3.5 flex-shrink-0 text-info" />}
+                  <span className="truncate font-mono text-xs text-foreground">{job.workflowName}</span>
                 </div>
-
-                <div className="flex items-center gap-1.5">
-                  {job.status === "success" && (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-healthy" />
-                      <span className="font-mono text-xs text-healthy">success</span>
-                    </>
-                  )}
-                  {job.status === "failed" && (
-                    <>
-                      <XCircle className="h-4 w-4 text-critical" />
-                      <span className="font-mono text-xs text-critical">failed</span>
-                    </>
-                  )}
-                  {job.status === "running" && (
-                    <>
-                      <Play className="h-4 w-4 text-info" />
-                      <span className="font-mono text-xs text-info">running</span>
-                    </>
-                  )}
-                  {job.status === "pending" && (
-                    <>
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-mono text-xs text-muted-foreground">pending</span>
-                    </>
-                  )}
-                </div>
+                <span className="font-mono text-xs text-muted-foreground">{job.duration || "running"}</span>
               </div>
             ))}
           </div>
         </Panel>
       </div>
 
-      {/* Failed Executions Alert */}
+      {/* Failed Jobs Alert */}
       {failedJobs.length > 0 && (
         <Panel
           title="Failed Executions"
           action={
-            <span className="font-mono text-[10.5px] text-critical">{failedJobs.length} failed</span>
+            <span className="font-mono text-[10.5px] text-critical">
+              {failedJobs.length} failed
+            </span>
           }
         >
-          <div className="flex flex-col gap-2">
+          <div className="space-y-2">
             {failedJobs.map((job) => (
               <div
                 key={job.id}
-                className="flex items-center justify-between border-2 border-critical/30 bg-critical/5 p-2.5"
+                className="flex items-start justify-between gap-3 border-l-4 border-critical bg-critical/5 p-3"
               >
-                <div className="flex flex-col gap-1">
-                  <span className="font-mono text-sm text-foreground">{job.workflowName}</span>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>
-                      {Math.floor((Date.now() - new Date(job.startTime).getTime()) / 60000)}m ago
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0 text-critical" />
+                    <span className="truncate font-mono text-sm font-medium text-foreground">
+                      {job.workflowName}
                     </span>
-                    <span>· {job.duration}</span>
                   </div>
-                  {job.result && <span className="text-sm text-critical">{job.result}</span>}
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {job.result || "Execution failed"}
+                  </p>
                 </div>
-
-                <div className="flex items-center gap-1.5">
-                  <AlertTriangle className="h-4 w-4 text-critical" />
-                  <span className="font-mono text-xs text-critical">failed</span>
-                </div>
+                <button className="flex-shrink-0 rounded border border-critical px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-critical hover:bg-critical hover:text-critical-foreground">
+                  retry
+                </button>
               </div>
             ))}
           </div>
