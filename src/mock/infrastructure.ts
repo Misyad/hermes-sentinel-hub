@@ -1,6 +1,6 @@
 // Mock data for infrastructure: nodes, assets, services
 
-import type { Node } from './types';
+import type { Node, ServiceHealth } from './types';
 
 // Infrastructure Nodes
 export const mockNodes: Node[] = [
@@ -181,4 +181,152 @@ export const mockInfrastructureMetrics = {
   avgCpu: (mockNodes.reduce((sum, n) => sum + n.cpu, 0) / mockNodes.length).toFixed(1),
   avgMemory: (mockNodes.reduce((sum, n) => sum + n.memory, 0) / mockNodes.length).toFixed(1),
   avgDisk: (mockNodes.reduce((sum, n) => sum + n.disk, 0) / mockNodes.length).toFixed(1),
+};
+
+// Services (extended from operations.ts mockServiceHealth)
+export const mockServices: ServiceHealth[] = [
+  {
+    id: 'svc-1',
+    name: 'api-gateway',
+    status: 'healthy',
+    uptime: 99.97,
+    latency: 24,
+    errorRate: 0.02,
+    requestsPerSec: 1847,
+  },
+  {
+    id: 'svc-2',
+    name: 'auth-service',
+    status: 'healthy',
+    uptime: 99.99,
+    latency: 18,
+    errorRate: 0.01,
+    requestsPerSec: 523,
+  },
+  {
+    id: 'svc-3',
+    name: 'db-primary',
+    status: 'degraded',
+    uptime: 98.45,
+    latency: 156,
+    errorRate: 1.2,
+    requestsPerSec: 3204,
+  },
+  {
+    id: 'svc-4',
+    name: 'cache-redis',
+    status: 'healthy',
+    uptime: 99.92,
+    latency: 3,
+    errorRate: 0.0,
+    requestsPerSec: 8942,
+  },
+  {
+    id: 'svc-5',
+    name: 'search-elastic',
+    status: 'healthy',
+    uptime: 99.89,
+    latency: 45,
+    errorRate: 0.08,
+    requestsPerSec: 412,
+  },
+  {
+    id: 'svc-6',
+    name: 'queue-kafka',
+    status: 'healthy',
+    uptime: 99.94,
+    latency: 12,
+    errorRate: 0.03,
+    requestsPerSec: 2145,
+  },
+  {
+    id: 'svc-7',
+    name: 'storage-s3',
+    status: 'healthy',
+    uptime: 99.99,
+    latency: 89,
+    errorRate: 0.01,
+    requestsPerSec: 634,
+  },
+  {
+    id: 'svc-8',
+    name: 'cdn-cloudflare',
+    status: 'healthy',
+    uptime: 100.0,
+    latency: 8,
+    errorRate: 0.0,
+    requestsPerSec: 12453,
+  },
+  {
+    id: 'svc-9',
+    name: 'worker-pool',
+    status: 'healthy',
+    uptime: 99.87,
+    latency: 234,
+    errorRate: 0.15,
+    requestsPerSec: 567,
+  },
+  {
+    id: 'svc-10',
+    name: 'notification-svc',
+    status: 'healthy',
+    uptime: 99.91,
+    latency: 67,
+    errorRate: 0.04,
+    requestsPerSec: 289,
+  },
+  {
+    id: 'svc-11',
+    name: 'analytics-pipeline',
+    status: 'healthy',
+    uptime: 99.84,
+    latency: 421,
+    errorRate: 0.12,
+    requestsPerSec: 145,
+  },
+  {
+    id: 'svc-12',
+    name: 'ml-inference',
+    status: 'critical',
+    uptime: 94.23,
+    latency: 1842,
+    errorRate: 5.67,
+    requestsPerSec: 23,
+  },
+  {
+    id: 'svc-13',
+    name: 'payment-processor',
+    status: 'healthy',
+    uptime: 99.96,
+    latency: 112,
+    errorRate: 0.03,
+    requestsPerSec: 89,
+  },
+  {
+    id: 'svc-14',
+    name: 'email-service',
+    status: 'healthy',
+    uptime: 99.88,
+    latency: 342,
+    errorRate: 0.06,
+    requestsPerSec: 156,
+  },
+  {
+    id: 'svc-15',
+    name: 'webhook-delivery',
+    status: 'degraded',
+    uptime: 97.12,
+    latency: 678,
+    errorRate: 2.34,
+    requestsPerSec: 234,
+  },
+];
+
+export const mockServiceMetrics = {
+  totalServices: mockServices.length,
+  healthyServices: mockServices.filter((s) => s.status === 'healthy').length,
+  degradedServices: mockServices.filter((s) => s.status === 'degraded').length,
+  criticalServices: mockServices.filter((s) => s.status === 'critical').length,
+  avgUptime: (mockServices.reduce((sum, s) => sum + s.uptime, 0) / mockServices.length).toFixed(2),
+  avgLatency: Math.round(mockServices.reduce((sum, s) => sum + s.latency, 0) / mockServices.length),
 };
