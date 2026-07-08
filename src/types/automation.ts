@@ -21,6 +21,12 @@ export interface Playbook {
   successRate: number;
   avgDuration: string;
   status: "active" | "inactive" | "archived";
+  version?: string;
+  risk?: "low" | "medium" | "high" | "critical";
+  tags?: string[];
+  owner?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Workflow {
