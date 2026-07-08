@@ -30,30 +30,12 @@ export const Route = createFileRoute("/workflows")({
 type StatusFilter = "all" | "running" | "completed" | "failed" | "pending" | "queued";
 
 function WorkflowsPage() {
-  const [workflows, setWorkflows] = useState<Workflow[]>([]);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
+  const { data: workflows = [], isLoading, refetch } = useWorkflows();
+  const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(
+    workflows[0] || null
+  );
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  useEffect(() => {
-    getWorkflows().then((data) => {
-      setWorkflows(data);
-      if (data.length > 0 && !selectedWorkflow) {
-        setSelectedWorkflow(data[0]);
-      }
-      setLoading(false);
-    });
-  }, []);
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    getWorkflows().then((data) => {
-      setWorkflows(data);
-      setIsRefreshing(false);
-    });
-  };
 
   const filteredWorkflows = workflows.filter((wf) => {
     const matchesStatus = statusFilter === "all" || wf.status === statusFilter;
@@ -78,11 +60,11 @@ function WorkflowsPage() {
   return (
     <div className="flex h-screen flex-col">
       {/* Header */}
-      <div className="border-b-2 border-border-strong bg-surface p-4">
+      <div className="border-b-2 border-border-strong">
         <PageHeader
           eyebrow="automation"
           title="Workflows"
-          description="Enterprise workflow execution and monitoring"
+          description="Design, execute, and monitor automation workflows"
           actions={
             <div className="flex items-center gap-2">
               <button
