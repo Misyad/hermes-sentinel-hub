@@ -33,19 +33,34 @@ export interface Workflow {
   id: string;
   name: string;
   description: string;
-  status: "running" | "completed" | "failed" | "pending";
+  status: "running" | "completed" | "failed" | "pending" | "queued";
   progress: number;
   steps: WorkflowStep[];
   startTime: string;
   estimatedCompletion?: string;
   triggeredBy: string;
+  version?: string;
+  owner?: string;
+  tags?: string[];
+  executions?: number;
+  successRate?: number;
+  avgDuration?: string;
+  dependencies?: string[];
+  environment?: string;
+  retryCount?: number;
+  maxRetries?: number;
 }
 
 export interface WorkflowStep {
   id: string;
   name: string;
+  type?: "trigger" | "condition" | "action" | "approval" | "notification" | "rollback";
   status: "pending" | "running" | "completed" | "failed" | "skipped";
   duration?: string;
+  retryCount?: number;
+  dependencies?: string[];
+  output?: string;
+  error?: string;
 }
 
 export interface Job {
