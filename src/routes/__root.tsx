@@ -7,14 +7,14 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { AppShell } from "@/components/layout/AppShell";
-import { Toaster } from "sonner";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { useEffect, type ReactNode } from "react";
+
+import appCss from "../styles.css?url";
+import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/layout/AppShell";
 import { Toaster } from "sonner";
 import { CommandPalette, useCommandPalette } from "../components/CommandPalette";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 function NotFoundComponent() {
   return (
@@ -146,11 +146,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CommandPalette isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      <AppShell>
-        <Outlet />
-      </AppShell>
-      <Toaster theme="dark" position="bottom-right" />
+      <AuthProvider>
+        <CommandPalette isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        <AppShell>
+          <Outlet />
+        </AppShell>
+        <Toaster theme="dark" position="bottom-right" />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
