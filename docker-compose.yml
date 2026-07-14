@@ -1,0 +1,16 @@
+services:
+  hermes-sentinel-hub:
+    build: .
+    container_name: hermes-sentinel-hub
+    restart: unless-stopped
+    ports:
+      - "3004:3000"
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
