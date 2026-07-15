@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import {
   Area,
   AreaChart,
@@ -25,6 +26,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel, Metric } from "@/components/shared/Panel";
 import { StatusBadge, SevPill } from "@/components/shared/StatusBadge";
 import { AIPanel } from "@/components/shared/AIPanel";
+import { api, type InfrastructureStatus, type ContainersStatus } from "@/lib/api";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -60,6 +62,34 @@ const deployBars = Array.from({ length: 14 }, (_, i) => ({
 }));
 
 function Dashboard() {
+  const [infraData, setInfraData] = useState<InfrastructureStatus | null>(null);
+  const [containersData, setContainersData] = useState<ContainersStatus | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [infra, containers] = await Promise.all([
+          api.getInfrastructureStatus(),
+          api.getContainersStatus(),
+        ]);
+        setInfraData(infra);
+        setContainersData(containers);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex flex-col">
       <PageHeader
