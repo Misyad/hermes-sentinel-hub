@@ -38,7 +38,7 @@ export interface HealthSummary {
   timestamp: string;
 }
 
-export const api = {
+export const apiClient = {
   async getInfrastructureStatus(): Promise<InfrastructureStatus> {
     const response = await fetch(`${API_BASE_URL}/api/infrastructure/status`);
     if (!response.ok) throw new Error('Failed to fetch infrastructure status');

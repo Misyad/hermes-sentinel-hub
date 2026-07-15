@@ -26,7 +26,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { Panel, Metric } from "@/components/shared/Panel";
 import { StatusBadge, SevPill } from "@/components/shared/StatusBadge";
 import { AIPanel } from "@/components/shared/AIPanel";
-import { api, type InfrastructureStatus, type ContainersStatus } from "@/lib/api";
+import { apiClient, type InfrastructureStatus, type ContainersStatus } from "@/lib/api";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -72,8 +72,8 @@ function Dashboard() {
       try {
         setLoading(true);
         const [infra, containers] = await Promise.all([
-          api.getInfrastructureStatus(),
-          api.getContainersStatus(),
+          apiClient.getInfrastructureStatus(),
+          apiClient.getContainersStatus(),
         ]);
         setInfraData(infra);
         setContainersData(containers);
